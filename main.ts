@@ -23,6 +23,12 @@ const shotsDir = join(repoRoot, 'screenshots');
 
 if (!existsSync(gameDir)) throw new Error('game/ is missing from the repository');
 if (!existsSync(join(gameDir, 'index.html'))) throw new Error('game/index.html is missing');
+// The game loads three.js from its vendored minified build (game/vendor/
+// three.module.min.js). Fail fast with a clear message if it is gone,
+// instead of handing in a game whose first import 404s.
+if (!existsSync(join(gameDir, 'vendor', 'three.module.min.js'))) {
+  throw new Error('game/vendor/three.module.min.js is missing — the vendored three.js build is required');
+}
 
 mkdirSync(outputDir, { recursive: true });
 cpSync(gameDir, join(outputDir, 'game'), { recursive: true });
